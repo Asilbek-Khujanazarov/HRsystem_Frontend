@@ -1,0 +1,14 @@
+<header class="header">
+  <div class="logo">
+    <h1>ACME.</h1>
+  </div>
+  <div class="header-actions">
+    <mat-icon (click)="onSearch()">search</mat-icon>
+    <mat-icon (click)="onNotifications()">notifications</mat-icon>
+    <!-- Foydalanuvchi ma'lumotlari qismi -->
+    <div class="user-info" (click)="goToLogin()" *ngIf="user">
+      <span class="user-name">{{ user.name }}</span>
+      <span class="user-role">{{ user.role }}</span>
+    </div>
+  </div>
+</header>

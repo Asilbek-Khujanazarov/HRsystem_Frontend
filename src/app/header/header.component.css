@@ -1,0 +1,67 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px; /* Paddingni kamaytirdik */
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 60px; /* Balandlikni aniq belgilaymiz */
+  box-sizing: border-box; /* Padding va border balandlikka ta'sir qilmasligi uchun */
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #343a40;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+  .user-info:hover {
+    background-color: #f1f1f1;
+  }
+
+.user-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #343a40;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+mat-icon {
+  cursor: pointer;
+  color: #6c757d;
+}
+
+  mat-icon:hover {
+    color: #007bff;
+  }
+
+.main-content {
+  margin-left: 220px; /* Sidebar kengligiga moslash */
+  margin-top: 60px; /* Header balandligiga moslash */
+  padding: 20px;
+}
+
