@@ -3,7 +3,7 @@
   <div class="profile-card">
     <div class="profile-header">
       <ng-container *ngIf="employee; else defaultIcon">
-        <img *ngIf="employee.profileImagePath; else defaultIcon" [src]="employee.profileImagePath" alt="Profile Image" class="avatar" (error)="onImageError()" />
+        <img *ngIf="employee.avatar; else defaultIcon" [src]="employee.avatar" alt="Profile Image" class="avatar" (error)="onImageError()" />
       </ng-container>
       <ng-template #defaultIcon>
         <mat-icon class="avatar-icon">account_circle</mat-icon>
@@ -11,8 +11,8 @@
       <div class="profile-info">
         <h2>{{ getFullName() }}</h2>
         <p>
-          <mat-icon>business</mat-icon> {{ employee?.position || 'N/A' }}
-          <mat-icon>location_on</mat-icon> {{ employee?.city || 'N/A' }}
+          <mat-icon>business</mat-icon> {{ employee?.role || 'N/A' }}
+          <mat-icon>location_on</mat-icon> {{ employeeDetails?.city || 'N/A' }}
         </p>
       </div>
     </div>
@@ -23,17 +23,17 @@
     <mat-tab label="Personal">
       <div class="tab-content">
         <h3>Personal Information</h3>
-        <p><mat-icon>email</mat-icon> {{ employee?.email || 'N/A' }}</p>
-        <p><mat-icon>phone</mat-icon> {{ employee?.phoneNumber || 'N/A' }}</p>
+        <p><mat-icon>email</mat-icon> {{ employeeDetails?.email || 'N/A' }}</p>
+        <p><mat-icon>phone</mat-icon> {{ employeeDetails?.phoneNumber || 'N/A' }}</p>
       </div>
     </mat-tab>
     <mat-tab label="Job">
       <div class="tab-content">
         <h3>Job Information</h3>
-        <p><strong>Hired on:</strong> {{ employee?.hireDate || 'N/A' }}</p>
-        <p><strong>Employment type:</strong> {{ employee?.employmentType || 'N/A' }}</p>
-        <p><strong>Position:</strong> {{ employee?.position || 'N/A' }}</p>
-        <p><strong>Department:</strong> {{ employee?.departmentName || 'N/A' }}</p>
+        <p><strong>Hired on:</strong> {{ employeeDetails?.hireDate || 'N/A' }}</p>
+        <p><strong>Employment type:</strong> {{ employeeDetails?.employmentType || 'N/A' }}</p>
+        <p><strong>Position:</strong> {{ employee?.role || 'N/A' }}</p>
+        <p><strong>Department:</strong> {{ employeeDetails?.departmentName || 'N/A' }}</p>
       </div>
     </mat-tab>
     <mat-tab label="Time off">
@@ -175,11 +175,11 @@
   <!-- Qo‘shimcha ma’lumotlar -->
   <div class="additional-info">
     <h3>Contact Information</h3>
-    <p><mat-icon>email</mat-icon> {{ employee?.email || 'N/A' }}</p>
-    <p><mat-icon>phone</mat-icon> {{ employee?.phoneNumber || 'N/A' }}</p>
-    <p><strong>Hired on:</strong> {{ employee?.hireDate || 'N/A' }}</p>
-    <p><strong>Employment type:</strong> {{ employee?.employmentType || 'N/A' }}</p>
-    <p><strong>Position:</strong> {{ employee?.position || 'N/A' }}</p>
-    <p><strong>Department:</strong> {{ employee?.departmentName || 'N/A' }}</p>
+    <p><mat-icon>email</mat-icon> {{ employeeDetails?.email || 'N/A' }}</p>
+    <p><mat-icon>phone</mat-icon> {{ employeeDetails?.phoneNumber || 'N/A' }}</p>
+    <p><strong>Hired on:</strong> {{ employeeDetails?.hireDate || 'N/A' }}</p>
+    <p><strong>Employment type:</strong> {{ employeeDetails?.employmentType || 'N/A' }}</p>
+    <p><strong>Position:</strong> {{ employee?.role || 'N/A' }}</p>
+    <p><strong>Department:</strong> {{ employeeDetails?.departmentName || 'N/A' }}</p>
   </div>
 </div>

@@ -3,7 +3,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
-import { EmployeeService } from '../employee.service';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router'; // Router import qilindi
+
 
 @Component({
   selector: 'app-header',
@@ -15,10 +17,14 @@ import { EmployeeService } from '../employee.service';
 export class HeaderComponent implements OnInit {
   user: { name: string; role: string; avatar: string; token: string } | null = null;
 
-  constructor(private dialog: MatDialog, private employeeService : EmployeeService) {}
+  constructor(
+    private dialog: MatDialog, 
+    private authService: AuthService,
+    private router: Router // Router dependency injection
+  ) {}
 
   ngOnInit() {
-    this.employeeService.getUser().subscribe(user => {
+    this.authService.getUser().subscribe(user => {
       this.user = user;
     });
   }
@@ -37,18 +43,24 @@ export class HeaderComponent implements OnInit {
         width: '400px',
         disableClose: true
       });
-
+  
       dialogRef.componentInstance.loginSuccess.subscribe(user => {
         this.user = user;
         dialogRef.close();
+        this.router.navigate(['/header']); // Login bo‘lgandan keyin sahifaga yo‘naltirish
       });
     } else {
       this.logout();
     }
   }
+  
 
   logout() {
-    this.employeeService.logout();
+    this.authService.logout();
     this.user = null;
+    this.router.navigate(['/login']); 
   }
+
+
+  
 }

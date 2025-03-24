@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SidebarService } from './sidebar.service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -13,5 +14,10 @@ import { HeaderComponent } from './header/header.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(public sidebarService: SidebarService) {}
+  constructor(public sidebarService: SidebarService, private authService: AuthService, private router: Router) {}
+  ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    }
+  }
 }

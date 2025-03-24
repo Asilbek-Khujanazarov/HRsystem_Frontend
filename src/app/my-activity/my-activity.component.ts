@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { EmployeeService } from '../employee.service'; 
+import { AuthService } from '../auth.service';
+import { EmployeeService } from '../employee.service';
 import { AttendanceService } from '../attendance.service';
 import { PayrollService } from '../payroll.service';
 import { Employee } from '../models/employee.model';
@@ -14,6 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-activity',
@@ -33,7 +35,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./my-activity.component.css']
 })
 export class MyActivityComponent implements OnInit {
-  employee: Employee | null = null;
+  employee: { name: string; role: string; avatar: string; token: string } | null = null;
+  employeeDetails: Employee | null = null;
   attendances: any[] = [];
   payrolls: any[] = [];
   errorMessage: string | null = null;
@@ -98,25 +101,42 @@ export class MyActivityComponent implements OnInit {
   public lineChartLegend = true;
 
   constructor(
+    private authService: AuthService,
     private employeeService: EmployeeService,
     private attendanceService: AttendanceService,
     private payrollService: PayrollService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.loadEmployeeData();
+    this.loadUserData();
+    this.loadEmployeeDetails();
     this.loadAttendanceData();
     this.loadPayrollData();
   }
 
-  loadEmployeeData() {
+  loadUserData() {
+    this.authService.getUser().subscribe({
+      next: (user) => {
+        this.employee = user;
+        if (!this.employee) {
+          this.snackBar.open('No user data found.', 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+          this.router.navigate(['/login']);
+        }
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.snackBar.open(this.errorMessage ?? 'An error occurred', 'Close', { duration: 5000, panelClass: ['error-snackbar'] });
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  loadEmployeeDetails() {
     this.employeeService.getCurrentEmployee().subscribe({
       next: (employee) => {
-        this.employee = employee;
-        if (!this.employee) {
-          this.snackBar.open('No employee data found.', 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
-        }
+        this.employeeDetails = employee;
       },
       error: (err) => {
         this.errorMessage = err.message;
@@ -149,6 +169,11 @@ export class MyActivityComponent implements OnInit {
         this.snackBar.open(this.errorMessage ?? 'An error occurred', 'Close', { duration: 5000, panelClass: ['error-snackbar'] });
       }
     });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   prepareChartData() {
@@ -235,7 +260,6 @@ export class MyActivityComponent implements OnInit {
     return Array(firstDayOfMonth).fill(null);
   }
 
-  // Yil va oyni o‘zgartirish uchun metodlar
   previousMonth() {
     if (this.selectedMonth === 1) {
       this.selectedMonth = 12;
@@ -256,14 +280,12 @@ export class MyActivityComponent implements OnInit {
     this.loadAttendanceData();
   }
 
-  // Oy nomini olish uchun metod
   getMonthName(): string {
     return this.months.find(month => month.value === this.selectedMonth)?.name || '';
   }
 
   getFullName(): string {
-    if (!this.employee) return 'N/A';
-    return `${this.employee.firstName} ${this.employee.lastName}`;
+    return this.employee?.name || 'N/A';
   }
 
   recordTimeOff(type: string) {
@@ -273,7 +295,7 @@ export class MyActivityComponent implements OnInit {
 
   onImageError() {
     if (this.employee) {
-      this.employee.profileImagePath = null;
+      this.employee.avatar = '';
     }
   }
 }

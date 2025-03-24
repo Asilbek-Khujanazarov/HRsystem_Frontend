@@ -3,8 +3,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { EmployeeService } from '../employee.service'; 
+import { AuthService } from '../auth.service'; // AuthService’ni import qilamiz
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,14 +21,15 @@ export class LoginComponent {
 
   @Output() loginSuccess = new EventEmitter<{ name: string; role: string; avatar: string; token: string }>();
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     this.errorMessage = null; // Har bir yangi urinishda xato xabarini tozalash
     if (this.username && this.password) {
-      this.employeeService.login(this.username, this.password).subscribe({
+      this.authService.login(this.username, this.password).subscribe({
         next: (user) => {
-          this.loginSuccess.emit(user);
+          this.loginSuccess.emit(user); // Event emit qilamiz
+          this.router.navigate(['/my-activity']); // Muvaffaqiyatli login’dan so‘ng yo‘naltirish
         },
         error: (err) => {
           this.errorMessage = err.message; // Xato xabarini ko‘rsatish
