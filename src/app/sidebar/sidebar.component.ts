@@ -18,7 +18,7 @@ export class SidebarComponent {
     { label: 'Time', path: '/time', icon: 'access_time' },
     { label: 'Calendar', path: '/calendar', icon: 'calendar_today' },
     { label: 'Directory', path: '/directory', icon: 'folder' },
-    { label: 'Employee', path: '/employee', icon: 'group' },
+    { label: 'Employees', path: '/employees', icon: 'group' },
     { label: 'Performance', path: '/performance', icon: 'emoji_events' },
     { label: 'Projects', path: '/projects', icon: 'folder_open' },
     { label: 'Surveys', path: '/surveys', icon: 'favorite' },
