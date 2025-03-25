@@ -6,6 +6,7 @@ import { MyActivityComponent } from './my-activity/my-activity.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth.guard';
 import { RecruitersComponent } from './recruiters/recruiters.component';
+import { AttendanceComponent } from './attendance/attendance.component'; // importing  attendance component
 
 export const routes: Routes = [
   { path: 'my-activity', component: MyActivityComponent},
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'reports', component: PageComponent, data: { page: 'reports' } },
   { path: 'settings', component: PageComponent, data: { page: 'settings' } },
   { path: '', redirectTo: '/my-activity', pathMatch: 'full' },
+  { path: 'attendance', component: AttendanceComponent },
 
 ];
 

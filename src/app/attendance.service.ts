@@ -35,6 +35,32 @@ export class AttendanceService {
     );
   }
 
+  postAttendanceEntry(employeeId: number) {
+    const token = this.safeGetCookie('token');
+    if (!token) return throwError(() => new Error('No token found. Please login first.'));
+
+    let params = new HttpParams();
+    if (employeeId) params = params.set('employeeId', employeeId.toString());
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<any>(`${this.apiUrl}/api/Attendance/entry`, { headers, params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  postAttendanceExit(employeeId: number) {
+    const token = this.safeGetCookie('token');
+    if (!token) return throwError(() => new Error('No token found. Please login first.'));
+
+    let params = new HttpParams();    
+    if (employeeId) params = params.set('employeeId', employeeId.toString());
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<any>(`${this.apiUrl}/api/Attendance/exit`, { headers, params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
     if (error.error && typeof error.error === 'string') {
@@ -47,4 +73,6 @@ export class AttendanceService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+
 }
