@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
   NgxScannerQrcodeComponent,
@@ -7,6 +7,9 @@ import {
   ScannerQRCodeConfig
 } from 'ngx-scanner-qrcode';
 import { AttendanceService } from '../attendance.service';
+import { Router, NavigationStart, Event as RouterEvent } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attendance',
@@ -18,13 +21,15 @@ import { AttendanceService } from '../attendance.service';
     NgxScannerQrcodeComponent
   ]
 })
-export class AttendanceComponent implements OnInit, AfterViewInit {
+export class AttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scanner') scanner!: NgxScannerQrcodeComponent;
   employeeId: number | null = null;
   scanActive = true;
   scanComplete = false;
   scanMessage = '';
   scanError = '';
+  
+  private routerSubscription: Subscription | null = null;
   
   // Define scanner configuration
   public config: ScannerQRCodeConfig = {
@@ -44,8 +49,19 @@ export class AttendanceComponent implements OnInit, AfterViewInit {
 
   constructor(
     private attendanceService: AttendanceService,
-    private qrCodeService: NgxScannerQrcodeService
-  ) {}
+    private qrCodeService: NgxScannerQrcodeService,
+    private router: Router
+  ) {
+    // Listen for router navigation events to stop scanner when leaving the page
+    this.routerSubscription = this.router.events
+      .pipe(filter((event: RouterEvent): event is NavigationStart => event instanceof NavigationStart))
+      .subscribe((event: NavigationStart) => {
+        // If navigating away from attendance page
+        if (!event.url.includes('/attendance')) {
+          this.stopScanner();
+        }
+      });
+  }
 
   ngOnInit(): void {
     // Check if camera access is available
@@ -57,8 +73,21 @@ export class AttendanceComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Start the scanner after view initialization
+    // Start the scanner automatically after view initialization
+    console.log('Component view initialized, starting scanner...');
     this.startScanner();
+  }
+
+  ngOnDestroy(): void {
+    // Clean up resources when component is destroyed
+    console.log('Component destroyed, stopping scanner...');
+    this.stopScanner();
+    
+    // Unsubscribe from router events
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+      this.routerSubscription = null;
+    }
   }
 
   startScanner(): void {
@@ -77,12 +106,25 @@ export class AttendanceComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.scanner.start();
           console.log('Scanner started');
+          this.scanActive = true;
         }, 500);
       })
       .catch(error => {
         console.error('Camera permission denied or error:', error);
         this.scanError = 'Camera access denied. Please allow camera access and reload the page.';
       });
+  }
+
+  stopScanner(): void {
+    // Stop the scanner if it exists
+    if (this.scanner) {
+      try {
+        this.scanner.stop();
+        console.log('Scanner stopped');
+      } catch (error) {
+        console.error('Error stopping scanner:', error);
+      }
+    }
   }
 
   onScanSuccess(result: ScannerQRCodeResult[]): void {
