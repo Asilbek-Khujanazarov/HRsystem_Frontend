@@ -21,6 +21,7 @@ import { filter } from 'rxjs/operators';
     NgxScannerQrcodeComponent
   ]
 })
+
 export class AttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scanner') scanner!: NgxScannerQrcodeComponent;
   employeeId: number | null = null;
@@ -29,6 +30,9 @@ export class AttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
   scanMessage = '';
   scanError = '';
   
+  currentDateTime: string = '';
+  private dateTimeInterval: any = null;
+
   private routerSubscription: Subscription | null = null;
   
   // Define scanner configuration
@@ -70,6 +74,13 @@ export class AttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.scanError = 'Camera API is not supported in this browser';
     }
+
+    this.updateDateTime();
+  
+    // Update the date/time every second
+    this.dateTimeInterval = setInterval(() => {
+      this.updateDateTime();
+    }, 1000);
   }
 
   ngAfterViewInit(): void {
@@ -209,5 +220,20 @@ export class AttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
           this.scanError = `Error recording exit: ${error.message || 'Unknown error'}`;
         }
       });
+  }
+
+
+  
+  private updateDateTime(): void {
+    const now = new Date();
+    this.currentDateTime = now.toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
   }
 }
