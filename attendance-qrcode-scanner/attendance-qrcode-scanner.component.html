@@ -1,0 +1,47 @@
+<div class="qr-scanner-container">
+    <!-- Header -->
+    <mat-card class="header-card">
+      <mat-card-title>QR Code Attendance Scanner</mat-card-title>
+      <mat-card-subtitle>Scan your QR code to record attendance</mat-card-subtitle>
+    </mat-card>
+  
+    <!-- Scanner Area -->
+    <div class="scanner-wrapper">
+      <ng-container *ngIf="isScanning; else scanButton">
+        <ngx-scanner-qrcode
+          [config]="{ constraints: { video: { width: 640, height: 480 } } }"
+          (event)="onScanSuccess($event)"
+          class="qr-scanner">
+        </ngx-scanner-qrcode>
+        <button mat-raised-button color="warn" (click)="isScanning = false">Stop Scanning</button>
+      </ng-container>
+  
+      <ng-template #scanButton>
+        <button mat-raised-button color="primary" (click)="startScanning()">
+          <mat-icon>qr_code</mat-icon> Start QR Scan
+        </button>
+      </ng-template>
+    </div>
+  
+    <!-- Scanned Result -->
+    <mat-card class="result-card" *ngIf="employeeId || scanError">
+      <mat-card-content>
+        <p *ngIf="employeeId" class="success-text">
+          <mat-icon>check_circle</mat-icon> Employee ID: {{ employeeId }}
+        </p>
+        <p *ngIf="scanError" class="error-text">
+          <mat-icon>error</mat-icon> Failed to read QR code. Please try again.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Action Buttons -->
+    <div class="action-buttons" *ngIf="employeeId">
+      <button mat-raised-button color="primary" (click)="postAttendanceEntry()">
+        <mat-icon>login</mat-icon> Record Entry
+      </button>
+      <button mat-raised-button color="accent" (click)="postAttendanceExit()">
+        <mat-icon>logout</mat-icon> Record Exit
+      </button>
+    </div>
+  </div>

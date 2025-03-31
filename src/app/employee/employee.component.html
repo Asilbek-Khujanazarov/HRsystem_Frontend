@@ -1,0 +1,85 @@
+<div class="employee-container">
+    <div class="header-section">
+      <h2>Employees</h2>
+      <div class="filters">
+        <mat-form-field appearance="fill" class="filter-field search-field">
+          <mat-label>Search by name</mat-label>
+          <input matInput (keyup)="applySearch($event)" placeholder="Enter employee name">
+          <mat-icon matSuffix class="search-icon">search</mat-icon>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="filter-field role-field">
+          <mat-label>Filter by Role</mat-label>
+          <mat-select [(ngModel)]="selectedRole" (selectionChange)="applyFilter()">
+            <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>filter_list</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <div class="error-message" *ngIf="errorMessage">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+  
+    <table mat-table [dataSource]="dataSource" class="modern-table" *ngIf="!errorMessage">
+      <ng-container matColumnDef="profileImage">
+        <th mat-header-cell *matHeaderCellDef>Profile</th>
+        <td mat-cell *matCellDef="let employee">
+          <ng-container *ngIf="employee.profileImagePath; else defaultIcon">
+            <img [src]="employee.profileImagePath" alt="Profile Image" class="avatar" (error)="employee.profileImagePath = null" />
+          </ng-container>
+          <ng-template #defaultIcon>
+            <mat-icon class="avatar-icon">account_circle</mat-icon>
+          </ng-template>
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Candidate name</th>
+        <td mat-cell *matCellDef="let employee">{{ getFullName(employee) }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.email || 'N/A' }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="phoneNumber">
+        <th mat-header-cell *matHeaderCellDef>Phone number</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.phoneNumber || 'N/A' }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="city">
+        <th mat-header-cell *matHeaderCellDef>City</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.city || 'N/A' }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="departmentName">
+        <th mat-header-cell *matHeaderCellDef>Department</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.departmentName || 'N/A' }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>Position</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.position || 'N/A' }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Role</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.role || 'N/A' }}</td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+    </table>
+  
+    <mat-paginator
+      *ngIf="!errorMessage && dataSource.data.length > 0"
+      [pageSizeOptions]="[5, 10, 20]"
+      [pageSize]="5"
+      showFirstLastButtons
+      class="modern-paginator">
+    </mat-paginator>
+  </div>

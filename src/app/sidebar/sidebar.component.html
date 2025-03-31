@@ -1,0 +1,14 @@
+<div class="sidebar" [ngClass]="{'collapsed': sidebarService.isCollapsed()}">
+  <div class="toggle-btn" (click)="toggleSidebar()">
+    <mat-icon>{{ sidebarService.isCollapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+  </div>
+  <div class="menu-header" *ngIf="!sidebarService.isCollapsed()">
+
+  </div>
+  <ul class="menu-items">
+    <li *ngFor="let item of menuItems" [routerLink]="[item.path]" routerLinkActive="active">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span *ngIf="!sidebarService.isCollapsed()">{{ item.label }}</span>
+    </li>
+  </ul>
+</div>
