@@ -16,3 +16,6 @@
 .content-collapsed {
   margin-left: 60px; /* Sidebar yopilgan holatdagi kenglik */
 }
+.content-collapsedHome {
+  margin-left: 0; /* Sidebar yopilgan holatdagi kenglik */
+}

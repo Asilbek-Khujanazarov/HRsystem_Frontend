@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../Services/auth.service';
 import { Router } from '@angular/router'; // Router import qilindi
 
 
@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.user = null;
-    this.router.navigate(['/login']); 
+    // this.router.navigate(['/login']); 
   }
 
 

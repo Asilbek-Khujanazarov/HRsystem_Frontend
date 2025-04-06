@@ -75,3 +75,32 @@ mat-icon {
 .sidebar.collapsed .menu-items li {
   justify-content: center;
 }
+
+
+
+
+
+/* sidebar.component.css */
+.pending-count {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px; /* Dumaloqning kengligi */
+  height: 20px; /* Dumaloqning balandligi */
+  background-color: red; /* Qizil fon */
+  color: white; /* Oq rangli raqam */
+  border-radius: 50%; /* Dumaloq shakl */
+  font-size: 12px; /* Raqamning o‘lchami */
+  font-weight: bold;
+  margin-left: 8px; /* Matndan keyin bo‘shliq */
+}
+
+.menu-items li {
+  display: flex;
+  align-items: center;
+}
+
+.menu-items span {
+  display: flex;
+  align-items: center;
+}

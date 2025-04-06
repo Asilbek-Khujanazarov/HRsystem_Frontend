@@ -1,4 +1,5 @@
 export interface Employee {
+    id: any;
     employeeId: number;
     userName: string;
     firstName: string;
@@ -13,7 +14,6 @@ export interface Employee {
     city: string;
     jobTitle: string;
     profileImagePath: string | null;
-    employmentType?: string; // employmentType qo‘shildi
     role: string;
   }
 
