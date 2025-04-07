@@ -4,12 +4,13 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttendanceService {
-  private apiUrl = 'http://localhost:5190';
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(
     private http: HttpClient,
@@ -24,7 +25,7 @@ export class AttendanceService {
     const token = this.safeGetCookie('token');
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    return this.http.get<any>(`${this.apiUrl}/api/Attendance/my-attendance`, { headers }).pipe(
+    return this.http.get<any>(`${this.apiUrl}/Attendance/my-attendance`, { headers }).pipe(
       catchError(this.handleError)
     );
   }
@@ -34,7 +35,7 @@ export class AttendanceService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const params = new HttpParams().set('employeeId', employeeId);
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    return this.http.get<any>(`${this.apiUrl}/api/Attendance`, { headers, params }).pipe(
+    return this.http.get<any>(`${this.apiUrl}/Attendance`, { headers, params }).pipe(
       catchError(this.handleError)
     );
   }
@@ -45,7 +46,7 @@ export class AttendanceService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const body = { employeeId };
-    return this.http.post<any>(`${this.apiUrl}/api/Attendance/entry`, body, { headers }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/Attendance/entry`, body, { headers }).pipe(
       catchError(this.handleError)
     );
   }
@@ -55,7 +56,7 @@ export class AttendanceService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const body = { employeeId };
-    return this.http.post<any>(`${this.apiUrl}/api/Attendance/exit`, body, { headers }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/Attendance/exit`, body, { headers }).pipe(
       catchError(this.handleError)
     );
   }

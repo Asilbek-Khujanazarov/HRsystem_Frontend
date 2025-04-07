@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { FormData } from 'undici-types';
+import { environment } from '../../environments/environments';
 
 
 export interface JobApplication {
@@ -23,26 +24,26 @@ export class JobApplicationService {
   sendApprovalEmail(id: number, email: string) {
     throw new Error('Method not implemented.');
   }
-  private apiUrl = 'http://localhost:5190/api/JobApplication';
-  private baseUrl = 'http://localhost:5190'; // Backend bazaviy URL
+  private apiUrl = environment.apiBaseUrl;
+  private baseUrl = environment.baseUrl; // Backend bazaviy URL
 
   constructor(private http: HttpClient) { }
   submitApplication(formData: globalThis.FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData);
+    return this.http.post(`${this.apiUrl}/JobApplication`, formData);
   }
 
 
   getApplications(): Observable<JobApplication[]> {
-    return this.http.get<JobApplication[]>(`${this.apiUrl}/GetApplications`);
+    return this.http.get<JobApplication[]>(`${this.apiUrl}/JobApplication/GetApplications`);
   }
 
   changeStatus(id: number, status: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/ChangeStatus?id=${id}&status=${status}`, null);
+    return this.http.put(`${this.apiUrl}/JobApplication/ChangeStatus?id=${id}&status=${status}`, null);
 
   }
 
   deleteApplication(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/DeleteJobApplication?id=${id}`);
+    return this.http.delete(`${this.apiUrl}/JobApplication/DeleteJobApplication?id=${id}`);
   }
 
   downloadFile(filePath: string): Observable<Blob> {

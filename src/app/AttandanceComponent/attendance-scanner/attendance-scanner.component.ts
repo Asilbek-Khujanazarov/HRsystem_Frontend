@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BarcodeFormat } from '@zxing/library';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { CommonModule } from '@angular/common';
+import { AttendanceScannerService } from '../../Services/attendance-scanner.service';
 
 @Component({
   selector: 'app-attendance-scanner',
@@ -18,10 +18,10 @@ export class AttendanceScannerComponent {
   employeeFullName: string | null = null;
   message: string = '';
   showScanner = false;
-  private scannerTimeout: any; // Timeout uchun o'zgaruvchi
+  private scannerTimeout: any;
   messageType: string | undefined;
 
-  constructor(private http: HttpClient) {}
+  constructor(private attendanceService: AttendanceScannerService) {}
 
   openScanner() {
     this.showScanner = true;
@@ -30,12 +30,11 @@ export class AttendanceScannerComponent {
     this.employeeFullName = null;
     this.message = '';
 
-    // 10 soniyadan keyin avtomatik yopilish
     this.scannerTimeout = setTimeout(() => {
-      if (this.isScanning) { // Agar hali skan qilinmagan bo'lsa
+      if (this.isScanning) {
         this.resetToInitial();
       }
-    }, 40000); // 40 soniya (40000 millisekund)
+    }, 40000); // 40 sekund
   }
 
   onCodeResult(result: string) {
@@ -43,14 +42,13 @@ export class AttendanceScannerComponent {
     this.isScanning = false;
     this.checkEmployee(result);
 
-    // Skan qilingandan keyin timeoutni tozalash
     if (this.scannerTimeout) {
       clearTimeout(this.scannerTimeout);
     }
   }
 
   checkEmployee(employeeId: string) {
-    this.http.get(`http://localhost:5190/api/Employee/GetEmployeeNameId?id=${employeeId}`).subscribe({
+    this.attendanceService.getEmployeeNameById(employeeId).subscribe({
       next: (response: any) => {
         this.employeeFullName = `${response.firstName} ${response.lastName}`;
         this.message = '';
@@ -58,7 +56,6 @@ export class AttendanceScannerComponent {
       error: (err) => {
         console.error('Employee check error:', err);
         this.employeeFullName = null;
-        this.message = 'Bunday xodim mavjud emas';
         setTimeout(() => this.resetToInitial(), 2000);
       }
     });
@@ -66,12 +63,8 @@ export class AttendanceScannerComponent {
 
   submitAttendance(type: 'entry' | 'exit') {
     if (!this.scanResult) return;
-  
-    const url = type === 'entry' 
-      ? 'http://localhost:5190/api/Attendance/entry' 
-      : 'http://localhost:5190/api/Attendance/exit';
-  
-    this.http.post(url, { employeeId: this.scanResult }).subscribe({
+
+    this.attendanceService.submitAttendance(type, this.scanResult).subscribe({
       next: (response: any) => {
         this.messageType = 'success';
         this.message = response.message || `${type === 'entry' ? 'Kirish' : 'Chiqish'} muvaffaqiyatli qayd etildi!`;
@@ -79,9 +72,8 @@ export class AttendanceScannerComponent {
       },
       error: (err) => {
         console.error('Attendance submit error:', err);
-        
-        // Xabarni aniqlab ko‘rsatish
         this.messageType = 'error';
+
         if (err.error?.message) {
           this.message = err.error.message;
         } else if (err.status === 0) {
@@ -89,13 +81,11 @@ export class AttendanceScannerComponent {
         } else {
           this.message = "Noma'lum xatolik yuz berdi!";
         }
-  
+
         setTimeout(() => this.resetToInitial(), 4000);
       }
     });
   }
-  
-
 
   resetToInitial() {
     this.showScanner = false;
@@ -104,7 +94,7 @@ export class AttendanceScannerComponent {
     this.employeeFullName = null;
     this.message = '';
     if (this.scannerTimeout) {
-      clearTimeout(this.scannerTimeout); // Timeoutni tozalash
+      clearTimeout(this.scannerTimeout);
     }
   }
 }

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   getAuthState() {
     throw new Error('Method not implemented.');
   }
-  private apiUrl = 'http://localhost:5190';
+  private apiUrl = environment.baseUrl;
   private userSubject = new BehaviorSubject<{ name: string; role: string; avatar: string; token: string } | null>(null);
 
   constructor(

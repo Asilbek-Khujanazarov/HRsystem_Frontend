@@ -4,12 +4,13 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UploadService {
-  private apiUrl = 'http://localhost:5190';
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(
     private http: HttpClient,
@@ -30,7 +31,7 @@ export class UploadService {
     const formData = new FormData();
     formData.append('file', file, file.name);
   
-    return this.http.put(`${this.apiUrl}/api/Employee/upload-profile-image`, formData, { headers }).pipe(
+    return this.http.put(`${this.apiUrl}/Employee/upload-profile-image`, formData, { headers }).pipe(
       map(response => {
         // Assuming the API returns the updated employee or just the image path
         return response;
@@ -45,7 +46,7 @@ export class UploadService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
   
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    return this.http.delete(`${this.apiUrl}/api/Employee/delete-profile-image`, { headers }).pipe(
+    return this.http.delete(`${this.apiUrl}/Employee/delete-profile-image`, { headers }).pipe(
       catchError(this.handleError)
     );
   }

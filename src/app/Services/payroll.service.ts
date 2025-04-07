@@ -4,13 +4,14 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PayrollService {
 
-  private apiUrl = 'http://localhost:5190';
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(
     private http: HttpClient,
@@ -33,7 +34,7 @@ export class PayrollService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' });
 
-    const url = `${this.apiUrl}/api/Payroll/schedule`;
+    const url = `${this.apiUrl}/Payroll/schedule`;
     return this.http.post<any>(url, payload, { headers }).pipe(
       catchError(this.handleError)
     );
@@ -44,7 +45,7 @@ export class PayrollService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    let url = `${this.apiUrl}/api/Payroll/GetPayroll`;
+    let url = `${this.apiUrl}/Payroll/GetPayroll`;
     const params: string[] = [];
     if (id) params.push(`id=${id}`);
     if (month) params.push(`month=${month}`);
@@ -68,7 +69,7 @@ export class PayrollService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' });
 
-    const url = `${this.apiUrl}/api/Payroll/pay`;
+    const url = `${this.apiUrl}/Payroll/pay`;
     return this.http.post<any>(url, payload, { headers }).pipe(
       catchError(this.handleError)
     );
@@ -79,7 +80,7 @@ export class PayrollService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    const url = `${this.apiUrl}/api/Payroll/payroll-history?employeeId=${employeeId}&month=${month}&year=${year}`;
+    const url = `${this.apiUrl}/Payroll/payroll-history?employeeId=${employeeId}&month=${month}&year=${year}`;
     return this.http.get<any>(url, { headers }).pipe(
       catchError(this.handleError)
     );
@@ -89,7 +90,7 @@ export class PayrollService {
     if (!token) return throwError(() => new Error('No token found. Please login first.'));
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    const url = `${this.apiUrl}/api/Payroll/general-report?month=${month}&year=${year}`;
+    const url = `${this.apiUrl}/Payroll/general-report?month=${month}&year=${year}`;
     return this.http.get<any>(url, { headers }).pipe(
       catchError(this.handleError)
     );

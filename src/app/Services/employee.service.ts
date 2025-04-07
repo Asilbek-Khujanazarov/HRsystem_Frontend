@@ -5,12 +5,13 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { Employee } from '../models/employee.model';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:5190';
+  private apiUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
