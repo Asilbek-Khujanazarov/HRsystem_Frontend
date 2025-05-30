@@ -1,0 +1,141 @@
+<div class="product-container">
+  <div class="header-section">
+    <h2>Products</h2>
+    <div class="filters">
+      <div class="compact-search">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input (keyup)="applySearch($event)" placeholder="Search" class="search-input">
+      </div>
+     <button class="add-button" (click)="openAddProductModal()" *ngIf="isAdmin">
+        <mat-icon class="add-icon">add</mat-icon> Add Product
+      </button>
+    </div>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div class="product-cards" *ngIf="!errorMessage && dataSource.length > 0">
+    <div class="product-card" *ngFor="let product of paginatedData">
+      <div class="card-image" (mouseleave)="hideActions()">
+        <ng-container *ngIf="product.imageUrl; else defaultIcon">
+          <img [src]="product.imageUrl" alt="Product Image" class="product-avatar"
+               (error)="product.imageUrl = null" />
+        </ng-container>
+        <ng-template #defaultIcon>
+          <mat-icon class="avatar-icon">shopping_cart</mat-icon>
+        </ng-template>
+        <button class="edit-icon" (click)="showActions(product.id)"*ngIf="isAdmin">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <div class="action-menu" *ngIf="selectedProductIdForAction === product.id">
+          <button class="menu-item" (click)="openEditProductModal(product)">Edit</button>
+          <button class="menu-item delete" (click)="deleteProduct(product.id)">Delete</button>
+        </div>
+      </div>
+      <div class="card-details">
+        <h3>{{ product.name || 'N/A' }}</h3>
+        <p>Price: {{ product.price | currency:'USD' }};   Stock: {{ product.stock }}</p>
+        <!-- <p>Stock: {{ product.stock }}</p> -->
+        <p class="description">{{ product.description || 'No description' }}</p>
+      </div>
+      <div class="card-actions"*ngIf="isAdmin">
+        <div class="action-group">
+          <!-- <label>Add Quantity< /label> -->
+          <input type="number" [(ngModel)]="addQuantities[product.id]" (ngModelChange)="updateAddQuantity(product.id)" min="0" class="quantity-input">
+          <button class="add-button" (click)="addToStock(product.id, addQuantities[product.id])">Add</button>
+        </div>
+        <div class="action-group">
+          <!-- <label>Take Quantity</label> -->
+          <input type="number" [(ngModel)]="takeQuantities[product.id]" (ngModelChange)="updateTakeQuantity(product.id)" min="1" class="quantity-input">
+          <button class="take-button" (click)="takeProduct(product.id, takeQuantities[product.id])">Take</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modern-paginator" *ngIf="!errorMessage && dataSource.length > 0">
+    <mat-paginator [length]="dataSource.length" [pageSize]="pageSize" [pageSizeOptions]="[4, 8, 12]"
+                   (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div class="modal" *ngIf="showAddModal">
+    <div class="modal-content">
+      <h3>Add New Product</h3>
+      <form (ngSubmit)="addProduct()" #productForm="ngForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Name</label>
+            <input [(ngModel)]="newProduct.name" name="name" required class="form-input"
+                   placeholder="Enter product name">
+          </div>
+          <div class="form-group">
+            <label>Price</label>
+            <input [(ngModel)]="newProduct.price" name="price" type="number" required class="form-input"
+                   placeholder="Enter price">
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input [(ngModel)]="newProduct.stock" name="stock" type="number" required class="form-input"
+                   placeholder="Enter stock quantity">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea [(ngModel)]="newProduct.description" name="description" class="form-input"
+                      placeholder="Enter product description"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <input type="file" (change)="onFileSelected($event)" name="image" class="form-input">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="cancel-button" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="submit-button" [disabled]="!productForm.valid">Add Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Product Modal -->
+  <div class="modal" *ngIf="showEditModal">
+    <div class="modal-content">
+      <h3>Edit Product</h3>
+      <form (ngSubmit)="updateProduct()" #editProductForm="ngForm" *ngIf="selectedProduct">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Name</label>
+            <input [(ngModel)]="selectedProduct.name" name="name" required class="form-input"
+                   placeholder="Enter product name">
+          </div>
+          <div class="form-group">
+            <label>Price</label>
+            <input [(ngModel)]="selectedProduct.price" name="price" type="number" required class="form-input"
+                   placeholder="Enter price">
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input [(ngModel)]="selectedProduct.stock" name="stock" type="number" required class="form-input"
+                   placeholder="Enter stock quantity">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea [(ngModel)]="selectedProduct.description" name="description" class="form-input"
+                      placeholder="Enter product description"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <input type="file" (change)="onFileSelected($event)" name="image" class="form-input">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="cancel-button" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="submit-button" [disabled]="!editProductForm.valid">Update Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

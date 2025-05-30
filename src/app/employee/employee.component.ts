@@ -34,7 +34,7 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
   pageSize = 5;
   pageIndex = 0;
 
-  newEmployee: any = {
+  newEmployee: any = { 
     userName: '',
     password: '',
     role: 'Employee',

@@ -10,6 +10,7 @@ import { DepartmentComponent } from './department/department.component';
 import { PayrollReportComponent } from './PayrollComponent/payroll-report/payroll-report.component';
 import { EmployeeInfoComponent } from './employee-info/employee-info.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ProductComponent } from './products/products.component';
 
 
 export const routes: Routes = [
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'attendance', component: AttendanceScannerComponent },
   { path: 'my-activity', component: EmployeeInfoComponent, canActivate: [AuthGuard] },
   { path: 'payroll-report', component: PayrollReportComponent },
+  { path: 'products', component: ProductComponent },
   { path: 'calendar', component: CalendarComponent },
   { path: 'employees', component: EmployeeComponent },
   { path: 'time', component: PageComponent, data: { page: 'time' } },
